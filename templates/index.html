@@ -20,17 +20,24 @@
                         <div class="input-group">
                             <button type="button" class="btn btn-outline-secondary" onclick="updateCopies(-1)">-</button>
                             <input type="text" class="form-control text-center" id="copias" name="copias" value="1" readonly>
-                            <button type="button" class="btn btn-outline-secondary" onclick="updateCopies(1)">+</button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="updateCopies(1)" >+</button>
                         </div>
                     </div>
-                    <div class="mb-3">
+                   <div class="mb-3">
                         <label class="form-label">Color de la impresión</label>
                         <div id="color-impresion" class="btn-group w-100" role="group">
-                            <button type="button" class="btn btn-outline-primary" id="color-bn" onclick="selectColor('B/N')">B/N</button>
+                            <button type="button" class="btn btn-outline-primary" id="color-byn" onclick="selectColor('ByN')">ByN</button>
                             <button type="button" class="btn btn-outline-primary" id="color-color" onclick="selectColor('Color')">Color</button>
                         </div>
-                        <input type="hidden" name="color" id="color-input" value="B/N">
-                        
+                        <input type="hidden" name="color" id="color-input" value="ByN">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Una o dos caras</label>
+                        <div id="cara-impresion" class="btn-group w-100" role="group">
+                            <button type="button" class="btn btn-outline-primary" id="cara-una" onclick="selectEstructura('Una')">Una cara</button>
+                            <button type="button" class="btn btn-outline-primary" id="cara-doble" onclick="selectEstructura('Doble')">Doble cara</button>
+                        </div>
+                        <input type="hidden" name="cara" id="cara-input" value="Una">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Tamaño del papel</label>
@@ -49,6 +56,9 @@
                         </select>
                     </div>
                 </form>
+                <div id="cart-total" class="alert alert-info">
+                    Precio total: €{{ cart_total }}
+                </div>            
             </div>
 
             <!-- Vista de carpetas -->
@@ -56,12 +66,12 @@
                 <form method="POST" enctype="multipart/form-data">
                     <div class="mb-4">
                         <button type="submit" name="action" value="create_folder" class="btn btn-primary">Añadir Carpeta</button>
-                        <button type="submit" name="action" value="add_to_cart" class="btn btn-success">Actualizar Carrito</button>
+                        <button type="button" class="btn btn-success" onclick="addToCart()">Actualizar Carrito</button>
                         <a href="{{ url_for('cart') }}" class="btn btn-info">Ir al Carrito</a>
                     </div>
                     <div id="folders">
                         {% for folder in folders %}
-                        <div class="p-3 mb-3 border rounded folder-item" data-folder-name="{{ folder.name }}" data-config='{{ folder.configuracion | tojson }}'>
+                        <div class="p-3 mb-3 border rounded folder-item" data-folder-name="{{ folder.name }}" data-config='{{ folder.configuracion | tojson | safe }}'>
                             <h5 onclick="setActiveFolder('{{ folder.name }}')">{{ folder.name }}</h5>
                             <form method="POST" enctype="multipart/form-data">
                                 <input type="hidden" name="folder_name" value="{{ folder.name }}">
@@ -74,7 +84,7 @@
                             {% if folder.archivos %}
                             <ul>
                                 {% for archivo in folder.archivos %}
-                                <li>{{ archivo }}</li>
+                                <li>{{ archivo.name }} - {{ archivo.pages }} páginas</li>
                                 {% endfor %}
                             </ul>
                             {% else %}
@@ -89,27 +99,35 @@
     </div>
 
     <script>
-        let activeFolder = null; // Carpeta activa
+        const PRICES = JSON.parse('{{ prices | tojson | safe }}');
+        let activeFolder = null;
     
         // Establecer la carpeta activa y cargar su configuración
         function setActiveFolder(folderName) {
             activeFolder = folderName;
             document.getElementById('active-folder').value = folderName;
     
-            // Obtener datos de la carpeta seleccionada
             const folderElement = document.querySelector(`[data-folder-name="${folderName}"]`);
             const config = JSON.parse(folderElement.getAttribute('data-config'));
     
-            // Actualizar los valores en el formulario
             document.getElementById('copias').value = config.copias || 1;
-            document.getElementById('color-input').value = config.color || 'B/N';
+            document.getElementById('color-input').value = config.color || 'ByN';
+            document.getElementById('cara-input').value = config.cara || 'Una';
             document.getElementById('tamano-papel').value = config.tamano_papel || 'A4 (297 x 210 mm)';
             document.getElementById('grosor-papel').value = config.grosor_papel || '80 gr (Estándar)';
     
-            // Actualizar visualización de botones de color
-            document.querySelectorAll('#color-impresion .btn').forEach(btn => btn.classList.remove('active'));
-            if (config.color) {
-                document.getElementById(`color-${config.color.toLowerCase().replace(/\s/g, '')}`).classList.add('active');
+            // Actualizar botones activos
+            updateActiveButton('#color-impresion', `color-${(config.color || 'ByN').toLowerCase()}`);
+            updateActiveButton('#cara-impresion', `cara-${(config.cara || 'Una').toLowerCase()}`);
+            calculatePrice();
+        }
+    
+        // Función para actualizar el botón activo
+        function updateActiveButton(groupSelector, activeId) {
+            document.querySelectorAll(`${groupSelector} .btn`).forEach(btn => btn.classList.remove('active'));
+            const activeButton = document.getElementById(activeId);
+            if (activeButton) {
+                activeButton.classList.add('active');
             }
         }
     
@@ -117,34 +135,75 @@
         function updateCopies(delta) {
             const copiesInput = document.getElementById('copias');
             let copies = parseInt(copiesInput.value) + delta;
-            copies = Math.max(1, copies); // Asegurar que el valor no sea menor que 1
+            copies = Math.max(1, copies);
             copiesInput.value = copies;
-            sendConfigUpdate(); // Guardar la configuración actualizada
-        }
     
-        // Cambiar color de impresión
-// Cambiar color de impresión
-        function selectColor(color) {
-            // Asignar el valor seleccionado al input oculto
-            document.getElementById('color-input').value = color;
-
-            // Normalizar el color para los IDs (reemplazar caracteres especiales)
-            const normalizedColor = color.toLowerCase().replace(/\s/g, '').replace(/\//g, ''); // "B/N" se convierte en "bn"
-
-            // Actualizar visualmente el botón activo
-            document.querySelectorAll('#color-impresion .btn').forEach(btn => btn.classList.remove('active'));
-            const activeButton = document.getElementById(`color-${normalizedColor}`);
-            if (activeButton) {
-                activeButton.classList.add('active');
-            }
-
-            // Guardar la configuración actualizada
+            updateConfigInActiveFolder('copias', copies);
+            calculatePrice();
             sendConfigUpdate();
         }
-
-
     
-        // Actualizar configuración en el backend
+        // Seleccionar color
+        function selectColor(color) {
+            document.getElementById('color-input').value = color;
+            updateActiveButton('#color-impresion', `color-${color.toLowerCase().replace(/\s/g, '')}`);
+    
+            updateConfigInActiveFolder('color', color);
+            calculatePrice();
+            sendConfigUpdate();
+        }
+    
+        // Seleccionar entre una cara y doble cara
+        function selectEstructura(cara) {
+            document.getElementById('cara-input').value = cara;
+            updateActiveButton('#cara-impresion', `cara-${cara.toLowerCase()}`);
+    
+            updateConfigInActiveFolder('cara', cara);
+            calculatePrice();
+            sendConfigUpdate();
+        }
+    
+        // Actualizar configuración en la carpeta activa
+        function updateConfigInActiveFolder(key, value) {
+            const folderName = document.getElementById('active-folder').value;
+            const folderElement = document.querySelector(`[data-folder-name="${folderName}"]`);
+    
+            if (folderElement) {
+                const folderConfig = JSON.parse(folderElement.getAttribute('data-config'));
+                folderConfig[key] = value; // Actualizar la clave específica
+                folderElement.setAttribute('data-config', JSON.stringify(folderConfig));
+            }
+        }
+    
+        // Calcular el precio dinámico
+        function calculatePrice() {
+            const folders = document.querySelectorAll('.folder-item');
+            let totalPrice = 0;
+    
+            folders.forEach(folder => {
+                const config = JSON.parse(folder.getAttribute('data-config'));
+                const files = Array.from(folder.querySelectorAll('ul li'));
+                let pages = 0;
+    
+                files.forEach(file => {
+                    const pagesText = file.innerText.match(/(\d+) páginas/);
+                    if (pagesText) {
+                        pages += parseInt(pagesText[1]);
+                    }
+                });
+    
+                const copies = parseInt(config.copias || 1);
+                const color = config.color === 'Color' ? 'color' : 'byn';
+                const cara = config.cara === 'Doble' ? 'dos_caras' : 'una_cara';
+                const perPagePrice = PRICES[color]?.[cara] || 0;
+    
+                totalPrice += pages * copies * perPagePrice;
+            });
+    
+            document.getElementById('cart-total').innerText = `Precio total: €${totalPrice.toFixed(2)}`;
+        }
+    
+        // Sincronizar con el backend
         function sendConfigUpdate(callback = null) {
             const configForm = document.getElementById('config-form');
             const formData = new FormData(configForm);
@@ -153,34 +212,49 @@
                 method: 'POST',
                 body: formData,
             })
-                .then(response => {
-                    if (response.ok) {
-                        console.log('Configuración guardada.');
-                        if (callback) {
-                            callback(); // Ejecutar callback si se pasa
-                        }
+            .then(response => {
+                if (response.ok) {
+                    console.log('Configuración guardada.');
+                    if (callback) {
+                        callback();
+                    }
+                } else {
+                    console.error('Error al guardar configuración.');
+                }
+            })
+            .catch(error => console.error('Error al enviar la configuración:', error));
+        }
+        
+        function addToCart() {
+            const formData = new FormData();
+            formData.append("action", "add_to_cart");
+            formData.append("cart_total", getLocalCartTotal()); // Incluye el precio total
+
+            fetch("/", {
+                method: "POST",
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log("Carrito actualizado correctamente.");
+                        window.location.href = "/cart"; // Redirige al carrito
                     } else {
-                        console.error('Error al guardar configuración.');
+                        console.error("Error al actualizar el carrito.");
                     }
                 })
-                .catch(error => console.error('Error al enviar la configuración:', error));
+                .catch(error => console.error("Error al actualizar el carrito:", error));
         }
-    
-        // Manejar el botón "Actualizar Carrito"
-        document.getElementById('update-cart-btn').addEventListener('click', function () {
-            sendConfigUpdate(() => {
-                console.log('Carrito actualizado sin redirigir.');
-            });
-        });
 
-    
-        // Manejar el botón "Ir al Carrito"
-        document.getElementById('go-to-cart-btn').addEventListener('click', function () {
-            sendConfigUpdate(() => {
-                window.location.href = '/cart';
-            });
-        });
+        function getLocalCartTotal() {
+            const cartTotalText = document.getElementById("cart-total").innerText;
+            return parseFloat(cartTotalText.replace("Precio total: €", "")) || 0;
+        }
+
+
+
     </script>
+    
     
 </body>
 </html>

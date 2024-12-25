@@ -6,7 +6,13 @@
 </head>
 <body>
     <div class="container my-5">
-        <h1>Carrito</h1>
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Carrito</h1>
+            <!-- Precio total en grande -->
+            <div class="alert alert-primary text-center" style="font-size: 1.5rem;">
+                Precio total: €{{ cart_total }}
+            </div>
+        </div>
         {% if cart %}
             {% for folder in cart %}
             <div class="p-3 mb-3 border rounded">
@@ -21,7 +27,7 @@
                 <h4>Archivos:</h4>
                 <ul>
                     {% for archivo in folder.archivos %}
-                    <li>{{ archivo }}</li>
+                    <li>{{ archivo.name }}</li>
                     {% endfor %}
                 </ul>
             </div>

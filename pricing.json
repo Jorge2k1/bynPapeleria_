@@ -1,0 +1,17 @@
+
+{
+    "color": {
+        "una_cara": 0.15,
+        "dos_caras": 0.15
+    },
+    "byn": {
+        "una_cara": 0.04,
+        "dos_caras": 0.03
+    },
+    "paper_weight": {
+        "160 gr (Grueso alto)": 0.05
+    },
+    "paper_size": {
+        "A4 (297 x 210 mm)": 1.0
+    }
+}
