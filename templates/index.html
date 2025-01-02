@@ -3,125 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Copistería Online</title>
+    <title>Papelería Blanco y Negro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/styleIndex.css') }}">
+
 </head>
 <body class="bg-light">
+
+    <div class="barra-superior">
+        <div class="logo">
+            <!-- <img src="/static/elements/logo.png" alt="Logo" class="logo-img"> -->
+        </div>
+        <div class="contenido">
+        </div>
+        <div class="cart">                       
+            <a href="{{ url_for('cart') }}" class="btn btn-info cartButton"> <img src="/static/elements/cart.png" alt="Carrito" class="cart-img"></a>
+        </div>
+        
+    </div>
+<!-- Menú desplegable en la esquina superior derecha -->
+<div class="instructions-dropdown">
+    <button class="btn btn-dark dropdown-toggle" type="button" id="instructionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        INSTRUCCIONES 
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="instructionsDropdown">
+        <li><strong>CONFIGURACIÓN</strong></li>
+        <li><strong>1:</strong> Selecciona el número de copias que deseas imprimir.</li>
+        <li><strong>2:</strong> Escoge si deseas impresión a color o en blanco y negro.</li>
+        <li><strong>3:</strong> Elige si quieres impresión en una o dos caras.</li>
+        <li><strong>4:</strong> Selecciona el tamaño y el grosor del papel.</li>
+        <li><strong>CARPETAS</strong></li>
+        <li><strong>5:</strong> Haz clic en "Elegir archivos" para seleccionar los documentos que deseas subir.</li>
+        <li><strong>6:</strong> Pulsa en "Confirmar" para subir los archivos seleccionados a la carpeta.</li>
+        <li><strong>7:</strong> Haz clic en una carpeta para mostrar o modificar su configuración.</li>
+        <li><strong>8:</strong> Pulsa en "Actualizar Carrito" para reflejar los cambios realizados.</li>
+        <li><strong>9:</strong> Ve al carrito para revisar los detalles y procede al pago.</li>
+    </ul>
+    
+</div>
     <div class="container my-5">
+        <div id="validation-errors" class="alert"></div>
+
         <div class="row">
             <!-- Configuración de impresión -->
-            <div class="col-md-4">
+            <div class="col-md-4 impresionConf">
                 <h5>Configuración de impresión</h5>
                 <form id="config-form" method="POST">
                     <input type="hidden" name="action" value="update_config">
                     <input type="hidden" name="folder_name" id="active-folder" value="">
-                    <div class="mb-3">
-                        <label class="form-label">Copias</label>
+                    
+        
+                    <div class="mb-3 opCopias">
+                        <label class="form-label" id="copiasT">Copias</label>
                         <div class="input-group">
                             <button type="button" class="btn btn-outline-secondary" onclick="updateCopies(-1)">-</button>
                             <input type="text" class="form-control text-center" id="copias" name="copias" value="1" readonly>
                             <button type="button" class="btn btn-outline-secondary" onclick="updateCopies(1)" >+</button>
                         </div>
                     </div>
-                   <div class="mb-3">
-                        <label class="form-label">Color de la impresión</label>
+
+                   <div class="mb-3 opColor">
+                        <label class="form-label" id="colorT">Color de la impresión</label>
                         <div id="color-impresion" class="btn-group w-100" role="group">
                             <button type="button" class="btn btn-outline-primary" id="color-byn" onclick="selectColor('ByN')">ByN</button>
                             <button type="button" class="btn btn-outline-primary" id="color-color" onclick="selectColor('Color')">Color</button>
                         </div>
                         <input type="hidden" name="color" id="color-input" value="ByN">
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Una o dos caras</label>
+
+                    <div class="mb-3 opCaras">
+                        <label class="form-label" id="carasT">Una o dos caras</label>
                         <div id="cara-impresion" class="btn-group w-100" role="group">
                             <button type="button" class="btn btn-outline-primary" id="cara-una" onclick="selectEstructura('Una')">Una cara</button>
                             <button type="button" class="btn btn-outline-primary" id="cara-doble" onclick="selectEstructura('Doble')">Doble cara</button>
                         </div>
                         <input type="hidden" name="cara" id="cara-input" value="Una">
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label">Tamaño del papel</label>
-                        <select class="form-select" id="tamano-papel" name="tamano_papel" onchange="updateConfig()">
-                            <option value="A3 (420 x 297 mm)">A3 (420 x 297 mm)</option>
-                            <option value="A4 (297 x 210 mm)" selected>A4 (297 x 210 mm)</option>
-                            <option value="A5 (210 x 148 mm)">A5 (210 x 148 mm)</option>
-                        </select>
+                        <label class="form-label">Encuadernación (A4)</label>
+                        <div class="custom-select-wrapper">
+                            <select class="form-select custom-select" id="encuadernacion" name="encuadernacion" onchange="updateConfigInActiveFolder('encuadernacion', this.value); calculatePrice(); sendConfigUpdate();">
+                                <option value="hasta_50_hojas">Hasta 50 hojas - 1,5 €</option>
+                                <option value="51_a_100_hojas">51 a 100 hojas - 2,0 €</option>
+                                <option value="101_a_150_hojas">101 a 150 hojas - 2,5 €</option>
+                                <option value="151_a_200_hojas">151 a 200 hojas - 3,0 €</option>
+                                <option value="201_a_250_hojas">201 a 250 hojas - 3,5 €</option>
+                                <option value="251_a_300_hojas">251 a 300 hojas - 4,0 €</option>
+                            </select>
+                            <span class="custom-arrow"></span>
+                        </div>
                     </div>
+                    
+                    
                     <div class="mb-3">
-                        <label class="form-label">Grosor del papel</label>
-                        <select class="form-select" id="grosor-papel" name="grosor_papel" onchange="updateConfig()">
-                            <option value="80 gr (Estándar)" selected>80 gr (Estándar)</option>
-                            <option value="160 gr (Grueso alto)">160 gr (Grueso alto)</option>
-                            <option value="280 gr (Tipo cartulina)">280 gr (Tipo cartulina)</option>
-                        </select>
+                        <label for="comentarios" class="form-label">Comentarios adicionales (opcional)</label>
+                        <div class="textarea-wrapper">
+                            <textarea class="form-control custom-textarea" id="comentarios" name="comentarios" rows="3" placeholder="Ejemplo: Impresión urgente, entregar antes del mediodía..."></textarea>
+                            <span class="textarea-icon">🖊️</span>
+                        </div>
                     </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" id="modalidadE">Modalidad de envío</label>
+                        <div id="envio-opciones" class="btn-group w-100" role="group">
+                            <button type="button" class="btn btn-outline-primary" id="envio-tienda" onclick="selectEnvio('tienda')">Recoger en tienda</button>
+                            <button type="button" class="btn btn-outline-primary" id="envio-domicilio" onclick="selectEnvio('domicilio')">Envío a domicilio (+4,50 €)</button>
+                        </div>
+                        <input type="hidden" name="modalidad_envio" id="modalidad-envio" value=" ">
+                    </div>
+                    <div class="mb-3" id="form-envio-domicilio" style="display: none;">
+                        <label for="name" class="form-label mt-3">Nombre</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Nombre y apellidos para identificar tu pedido">
+
+                        <label for="direccion" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Calle, número, piso, etc.">
+                        
+                        <label for="provincia" class="form-label mt-3">Provincia</label>
+                        <input type="text" class="form-control" id="provincia" name="provincia" placeholder="Provincia">
+                        
+                        <label for="email" class="form-label mt-3">Correo electrónico</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="ejemplo@correo.com">
+                        
+                        <label for="telefono" class="form-label mt-3">Teléfono</label>
+                        <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="123-456-789">
+                    </div>
+
                 </form>
+                <!-- <div id="cart-total" class="alert alert-info">
+                    Precio total: 
+                    <div id="totalPrize">{{ cart_total }} €</div>
+                </div>             -->
                 <div id="cart-total" class="alert alert-info">
-                    Precio total: €{{ cart_total }}
-                </div>            
+                    <p id="totalPrize">Subtotal: {{ cart_total }} €</p>
+                    <p id="envioPrice">Envío: {{ envio_total }} €</p>
+                    <hr>
+                    <strong id="finalPrice">Total final: {{ total_con_envio }} €</strong>
+                </div>
+                
+                
             </div>
 
             <!-- Vista de carpetas -->
             <div class="col-md-8">
                 <form method="POST" enctype="multipart/form-data">
-                    <div class="mb-4">
-                        <button type="submit" name="action" value="create_folder" class="btn btn-primary">Añadir Carpeta</button>
-                        <button type="button" class="btn btn-success" onclick="addToCart()">Actualizar Carrito</button>
-                        <a href="{{ url_for('cart') }}" class="btn btn-info">Ir al Carrito</a>
+                    <div class="mb-4 d-flex align-items-center">
+                        <!-- Botón de añadir carpeta -->
+                        <button type="submit" name="action" value="create_folder" class="btn btn-primary addFolder">
+                            <img src="/static/elements/addFolder.png" alt="Añadir Carpeta" class="add-folder-img folderImg">
+                        </button>
+                        <!-- Botón de actualizar carrito -->
+                        <button type="button" class="btn btn-success ms-auto updateCart" onclick="addToCart()">Actualizar Carrito</button>
+                    </div>
+                    
+                    <div id="no-folders" class="text-center mt-5" style="display: none;">
+                        <img src="/static/elements/noFolders.png" alt="No hay carpetas" class="no-folders-img">
                     </div>
                     <div id="folders">
                         {% for folder in folders %}
-                        <div class="p-3 mb-3 border rounded folder-item" data-folder-name="{{ folder.name }}" data-config='{{ folder.configuracion | tojson | safe }}'>
-                            <h5 onclick="setActiveFolder('{{ folder.name }}')">{{ folder.name }}</h5>
+                        <div 
+                        onclick="setActiveFolder('{{ folder.name }}')" 
+                        class="p-3 mb-3 border rounded folder-item" 
+                        data-folder-name="{{ folder.name }}" 
+                        data-config='{{ folder.configuracion | tojson | safe }}'>
+                        <h5>{{ folder.name }}</h5>
                             <form method="POST" enctype="multipart/form-data">
                                 <input type="hidden" name="folder_name" value="{{ folder.name }}">
                                 <div class="mb-3">
                                     <label class="form-label">Selecciona los archivos a imprimir</label>
-                                    <input type="file" class="form-control" name="file" multiple>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <input type="file" class="form-control" name="file" id="fileInput-{{ loop.index }}" multiple onchange="toggleUploadButton({{ loop.index }})">
+                                        <button type="submit" name="action" value="upload_to_folder" class="btn btn-primary confirmarSubida" id="uploadButton-{{ loop.index }}" disabled>Confirmar</button>
+                                    </div>
                                 </div>
-                                <button type="submit" name="action" value="upload_to_folder" class="btn btn-primary">Subir Documentos</button>
+                                
+                                
+                                <!-- <div class="mb-3">
+                                    <label class="form-label">Selecciona los archivos a imprimir</label>
+                                    <input type="file" class="form-control" name="file" multiple>
+                                </div> -->
                             </form>
-                            {% if folder.archivos %}
-                            <ul>
-                                {% for archivo in folder.archivos %}
-                                <li>{{ archivo.name }} - {{ archivo.pages }} páginas</li>
-                                {% endfor %}
-                            </ul>
-                            {% else %}
-                            <p>No hay archivos en esta carpeta.</p>
-                            {% endif %}
+
+                            <div class="uploaded-files">
+                                {% if folder.archivos %}
+                                    <div class="file-grid">
+                                        {% for archivo in folder.archivos %}
+                                            <div class="file-item">
+                                                <img src="/static/elements/pdfIcon.png" alt="PDF Icon" class="file-icon">
+                                                <span class="file-name">{{ archivo.name }} - {{ archivo.pages }} páginas</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p>No hay archivos en esta carpeta.</p>
+                                {% endif %}
+                            </div>
                         </div>
                         {% endfor %}
                     </div>
+                    
                 </form>
             </div>
         </div>
     </div>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    
     <script>
         const PRICES = JSON.parse('{{ prices | tojson | safe }}');
-        let activeFolder = null;
-    
-        // Establecer la carpeta activa y cargar su configuración
+        let activeFolderElement = null; // Variable para rastrear la carpeta activa
+
         function setActiveFolder(folderName) {
-            activeFolder = folderName;
-            document.getElementById('active-folder').value = folderName;
-    
             const folderElement = document.querySelector(`[data-folder-name="${folderName}"]`);
+            if (!folderElement) return;
+
+                        // Quitar clase `active` de la carpeta previamente seleccionada
+            if (activeFolderElement) {
+                activeFolderElement.classList.remove('active');
+            }
+
+            // Añadir clase `active` a la nueva carpeta
+            folderElement.classList.add('active');
+            activeFolderElement = folderElement;
+            // Actualiza la carpeta activa
+            document.getElementById('active-folder').value = folderName;
+
+            // Actualiza los valores del formulario con la configuración actual
             const config = JSON.parse(folderElement.getAttribute('data-config'));
-    
+
             document.getElementById('copias').value = config.copias || 1;
-            document.getElementById('color-input').value = config.color || 'ByN';
-            document.getElementById('cara-input').value = config.cara || 'Una';
-            document.getElementById('tamano-papel').value = config.tamano_papel || 'A4 (297 x 210 mm)';
-            document.getElementById('grosor-papel').value = config.grosor_papel || '80 gr (Estándar)';
-    
-            // Actualizar botones activos
-            updateActiveButton('#color-impresion', `color-${(config.color || 'ByN').toLowerCase()}`);
-            updateActiveButton('#cara-impresion', `cara-${(config.cara || 'Una').toLowerCase()}`);
+            document.getElementById('color-input').value = config.color || 'byn';
+            document.getElementById('cara-input').value = config.cara || 'una_cara';
+            document.getElementById('encuadernacion').value = config.encuadernacion || 'hasta_50_hojas';
+
+            // Actualizar botones activos de color
+            updateActiveButton('#color-impresion', config.color === 'Color' ? 'color-color' : 'color-byn');
+
+            // Actualizar botones activos de una/doble cara
+            updateActiveButton('#cara-impresion', config.cara === 'Doble' ? 'cara-doble' : 'cara-una');
+
+            // Recalcula el precio
             calculatePrice();
         }
-    
+
         // Función para actualizar el botón activo
         function updateActiveButton(groupSelector, activeId) {
             document.querySelectorAll(`${groupSelector} .btn`).forEach(btn => btn.classList.remove('active'));
@@ -137,7 +263,7 @@
             let copies = parseInt(copiesInput.value) + delta;
             copies = Math.max(1, copies);
             copiesInput.value = copies;
-    
+            console.log("se pulsa pero no se actualiza")
             updateConfigInActiveFolder('copias', copies);
             calculatePrice();
             sendConfigUpdate();
@@ -167,68 +293,128 @@
         function updateConfigInActiveFolder(key, value) {
             const folderName = document.getElementById('active-folder').value;
             const folderElement = document.querySelector(`[data-folder-name="${folderName}"]`);
-    
+
             if (folderElement) {
+                // Actualiza la configuración en el atributo data-config
                 const folderConfig = JSON.parse(folderElement.getAttribute('data-config'));
                 folderConfig[key] = value; // Actualizar la clave específica
                 folderElement.setAttribute('data-config', JSON.stringify(folderConfig));
+
+                // Enviar al backend
+                sendConfigUpdate();
             }
         }
+
     
         // Calcular el precio dinámico
         function calculatePrice() {
             const folders = document.querySelectorAll('.folder-item');
             let totalPrice = 0;
-    
+
             folders.forEach(folder => {
                 const config = JSON.parse(folder.getAttribute('data-config'));
-                const files = Array.from(folder.querySelectorAll('ul li'));
+                const fileGrid = folder.querySelector('.file-grid');
                 let pages = 0;
-    
-                files.forEach(file => {
-                    const pagesText = file.innerText.match(/(\d+) páginas/);
-                    if (pagesText) {
-                        pages += parseInt(pagesText[1]);
-                    }
-                });
-    
+
+                // Calcular el número total de páginas
+                if (fileGrid) {
+                    const files = Array.from(fileGrid.querySelectorAll('.file-item'));
+                    files.forEach(file => {
+                        const fileText = file.querySelector('.file-name').innerText;
+                        const pagesMatch = fileText.match(/(\d+)\s+páginas/);
+                        if (pagesMatch) {
+                            pages += parseInt(pagesMatch[1]);
+                        }
+                    });
+                }
+
                 const copies = parseInt(config.copias || 1);
                 const color = config.color === 'Color' ? 'color' : 'byn';
                 const cara = config.cara === 'Doble' ? 'dos_caras' : 'una_cara';
+                const encuadernacion = config.encuadernacion || 'hasta_50_hojas';
+
+                // Calcular precio por página y encuadernación
                 const perPagePrice = PRICES[color]?.[cara] || 0;
-    
-                totalPrice += pages * copies * perPagePrice;
+                const encuadernacionPrice = PRICES.encuadernacion_a4?.[encuadernacion] || 0;
+
+                // Calcular el precio total para esta carpeta
+                totalPrice += pages * copies * perPagePrice + encuadernacionPrice;
             });
-    
-            document.getElementById('cart-total').innerText = `Precio total: €${totalPrice.toFixed(2)}`;
+
+            // Calcular el precio de envío
+            const modalidadEnvio = document.getElementById('modalidad-envio').value;
+            const envioPrice = PRICES.recogida?.[modalidadEnvio] || 0;
+
+            // Actualizar los totales en el DOM
+            document.getElementById('totalPrize').innerText = `Subtotal: ${totalPrice.toFixed(2)} €`;
+            document.getElementById('envioPrice').innerText = `Envío: ${envioPrice.toFixed(2)} €`;
+            document.getElementById('finalPrice').innerText = `Total final: ${(totalPrice + envioPrice).toFixed(2)} €`;
         }
+
+
+
+
+
     
         // Sincronizar con el backend
-        function sendConfigUpdate(callback = null) {
+        function sendConfigUpdate() {
             const configForm = document.getElementById('config-form');
             const formData = new FormData(configForm);
-    
+
             fetch('/', {
                 method: 'POST',
                 body: formData,
             })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Configuración guardada.');
-                    if (callback) {
-                        callback();
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Configuración actualizada.');
+                    } else {
+                        console.error('Error al guardar configuración.');
                     }
-                } else {
-                    console.error('Error al guardar configuración.');
-                }
-            })
-            .catch(error => console.error('Error al enviar la configuración:', error));
+                })
+                .catch(error => console.error('Error al enviar la configuración:', error));
         }
+
         
         function addToCart() {
+            hideErrors();
+
+            const modalidadEnvio = document.getElementById('modalidad-envio').value;
+
+            if (!modalidadEnvio || (modalidadEnvio !== "tienda" && modalidadEnvio !== "domicilio")) {
+                showError("Por favor, selecciona una modalidad de envío.");
+                return;
+            }
+
+            const cartTotalText = document.getElementById("totalPrize").innerText.replace("Subtotal: ", "").replace("€", "").trim();
+            const cartTotal = parseFloat(cartTotalText) || 0;
+
+            const envioPriceText = document.getElementById("envioPrice").innerText.replace("Envío: ", "").replace("€", "").trim();
+            const envioPrice = parseFloat(envioPriceText) || 0;
+
             const formData = new FormData();
             formData.append("action", "add_to_cart");
-            formData.append("cart_total", getLocalCartTotal()); // Incluye el precio total
+            formData.append("cart_total", cartTotal);
+            formData.append("envio_total", envioPrice);
+
+            if (modalidadEnvio === "domicilio") {
+                const name = document.getElementById('name').value;
+                const direccion = document.getElementById('direccion').value;
+                const provincia = document.getElementById('provincia').value;
+                const email = document.getElementById('email').value;
+                const telefono = document.getElementById('telefono').value;
+
+                if (!name || !direccion || !provincia || !email || !telefono) {
+                    showError("Por favor, completa todos los campos del formulario de envío.");
+                    return;
+                }
+
+                formData.append("name", name);
+                formData.append("direccion", direccion);
+                formData.append("provincia", provincia);
+                formData.append("email", email);
+                formData.append("telefono", telefono);
+            }
 
             fetch("/", {
                 method: "POST",
@@ -238,7 +424,7 @@
                 .then(data => {
                     if (data.success) {
                         console.log("Carrito actualizado correctamente.");
-                        window.location.href = "/cart"; // Redirige al carrito
+                        window.location.href = "/cart";
                     } else {
                         console.error("Error al actualizar el carrito.");
                     }
@@ -247,11 +433,94 @@
         }
 
         function getLocalCartTotal() {
-            const cartTotalText = document.getElementById("cart-total").innerText;
-            return parseFloat(cartTotalText.replace("Precio total: €", "")) || 0;
+            const cartTotalText = document.getElementById("totalPrize").innerText;
+            return parseFloat(cartTotalText.replace("€", "")) || 0;
+        }
+
+        function toggleUploadButton(folderName) {
+            const fileInput = document.getElementById(`fileInput-${folderName}`);
+            const uploadButton = document.getElementById(`uploadButton-${folderName}`);
+
+            if (fileInput.files.length > 0) {
+                uploadButton.disabled = false; // Habilita el botón si hay archivos seleccionados
+            } else {
+                uploadButton.disabled = true; // Deshabilita el botón si no hay archivos
+            }
+        }
+
+        function checkFolders() {
+            const foldersContainer = document.getElementById('folders');
+            const noFoldersContainer = document.getElementById('no-folders');
+
+            // Si no hay carpetas, muestra el mensaje
+            if (foldersContainer.children.length === 0) {
+                noFoldersContainer.style.display = 'block';
+            } else {
+                noFoldersContainer.style.display = 'none';
+            }
+        }
+
+        function selectEnvio(modalidad) {
+            const envioInput = document.getElementById('modalidad-envio');
+            envioInput.value = modalidad;
+
+            const buttons = document.querySelectorAll('#envio-opciones .btn');
+            buttons.forEach(button => button.classList.remove('active'));
+
+            const activeButton = document.getElementById(`envio-${modalidad}`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            }
+
+            // Mostrar u ocultar formulario de envío
+            const formEnvioDomicilio = document.getElementById('form-envio-domicilio');
+            if (modalidad === 'domicilio') {
+                formEnvioDomicilio.style.display = 'block';
+            } else {
+                formEnvioDomicilio.style.display = 'none';
+            }
+
+            calculatePrice();
         }
 
 
+        // Llama a esta función cuando se cargue la página
+        document.addEventListener('DOMContentLoaded', checkFolders);
+        function showError(message) {
+            const errorDiv = document.getElementById('validation-errors');
+
+            // Asegúrate de que el mensaje existe
+            if (!errorDiv) {
+                console.error("No se encontró el contenedor de errores.");
+                return;
+            }
+
+            // Establece el mensaje de error
+            errorDiv.innerText = message;
+
+            // Añade la clase `show` para hacer visible el mensaje
+            errorDiv.classList.add('show');
+
+            // Oculta el mensaje después de 7 segundos
+            setTimeout(() => {
+                hideErrors();
+            }, 7000);
+        }
+
+        function hideErrors() {
+            const errorDiv = document.getElementById('validation-errors');
+
+            // Asegúrate de que el contenedor existe
+            if (!errorDiv) {
+                console.error("No se encontró el contenedor de errores.");
+                return;
+            }
+
+            // Quita la clase `show` para ocultar el mensaje
+            errorDiv.classList.remove('show');
+        }
+
+// Si eliminas o agregas carpetas dinámicamente, asegúrate de volver a llamar a `checkFolders`
 
     </script>
     

@@ -1,0 +1,600 @@
+#validation-errors {
+    font-size: 23px;
+    position: fixed; /* Se posiciona sobre el contenido */
+    top: 10px; /* Ubicado en la parte superior */
+    left: 50%; /* Centrado horizontalmente */
+    transform: translateX(-50%) translateY(-50px); /* Oculto inicialmente hacia arriba */
+    z-index: 1050; /* Encima de otros elementos */
+    padding: 15px 20px; /* Espaciado interno */
+    background-color: rgba(220, 53, 69, 0.9); /* Fondo rojo con transparencia */
+    color: white; /* Texto en blanco */
+    border-radius: 8px; /* Bordes redondeados */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); /* Sombra */
+    opacity: 0; /* Oculto inicialmente */
+    transition: opacity 0.5s ease, transform 0.5s ease; /* Animaciones suaves */
+}
+
+/* Estado visible del mensaje */
+#validation-errors.show {
+    opacity: 1; /* Hace el mensaje visible */
+    transform: translateX(-50%) translateY(0); /* Mueve el mensaje a su posición */
+}
+
+
+.barra-superior {
+    width: 100%;
+    height: 141px;
+    background-color: black;
+    display: flex; /* Alinea los elementos en fila */
+    align-items: center; /* Centra verticalmente los elementos */
+    justify-content: space-between; /* Coloca elementos a los extremos */
+    padding: 0 20px; /* Espaciado interno en los lados */
+    gap: 20px; /* Espacio entre el logo y el contenido */
+}
+
+.logo {
+    flex-shrink: 0; /* Evita que el logo se reduzca al redimensionar */
+}
+
+/* Posiciona el dropdown en la esquina superior derecha, debajo de la barra */
+.instructions-dropdown {
+    position: absolute;
+    top: 150px; /* Justo debajo de la barra superior */
+    right: 20px; /* Separado un poco del borde derecho */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+}
+
+/* Botón del dropdown */
+.instructions-dropdown .btn-dark {
+    background-color: black; /* Fondo negro */
+    color: white; /* Texto blanco */
+    border: 1px solid white; /* Borde blanco */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.instructions-dropdown .btn-dark:hover {
+    background-color: white; /* Fondo blanco */
+    color: black; /* Texto negro */
+    border: 1px solid black; /* Cambia el borde */
+}
+
+/* Menú desplegable */
+/* Hacer que el menú sea más ancho */
+.instructions-dropdown .dropdown-menu {
+    background-color: black; /* Fondo negro */
+    color: white; /* Texto blanco */
+    border: 1px solid white; /* Borde blanco */
+    border-radius: 8px; /* Bordes redondeados */
+    padding: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    max-width: 400px; /* Ajustar el ancho máximo del menú */
+    min-width: 300px; /* Ajustar el ancho mínimo del menú */
+    word-wrap: break-word; /* Romper las palabras largas si es necesario */
+}
+
+/* Elementos del menú */
+.instructions-dropdown .dropdown-menu li {
+    padding: 10px;
+    font-size: 1.5rem;
+    line-height: 1.5;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Línea divisoria */
+}
+
+.instructions-dropdown .dropdown-menu li:last-child {
+    border-bottom: none; /* Sin línea para el último elemento */
+}
+
+/* Hover sobre los elementos del menú */
+.instructions-dropdown .dropdown-menu li:hover {
+    background-color: #333; /* Fondo más oscuro */
+    cursor: pointer;
+}
+
+.cartButton {
+    display: inline-block !important; /* Asegura que el enlace envuelva la imagen */
+    padding: 0 !important; /* Elimina cualquier espacio interno */
+    background: none !important; /* Elimina cualquier fondo */
+    border: none !important; /* Elimina cualquier borde */
+    box-shadow: none !important; /* Elimina cualquier sombra */
+    cursor: pointer; /* Cambia el cursor a mano */
+    outline: none !important; /* Elimina el borde al enfocarse */
+}
+
+.addFolder {
+
+    display: inline-block !important; /* Asegura que el enlace envuelva la imagen */
+    padding: 0 !important; /* Elimina cualquier espacio interno */
+    background: none !important; /* Elimina cualquier fondo */
+    border: none !important; /* Elimina cualquier borde */
+    box-shadow: none !important; /* Elimina cualquier sombra */
+    cursor: pointer; /* Cambia el cursor a mano */
+    outline: none !important; /* Elimina el borde al enfocarse */
+    cursor: pointer;
+    transition: transform 0.3s ease, content 0.3s ease; /* Animaciones */
+}
+
+.addFolder:hover, .folderImg:hover {
+    content: url('/static/elements/folderhovered.png'); /* Reemplaza la imagen al hover */
+    transform: scale(1.1); /* Efecto de zoom */
+}
+
+.folderImg {
+    height: 50px;
+    width: 65px;
+}
+
+.cart {
+    flex-shrink: 0; /* Evita que el carrito se reduzca */
+
+}
+.cart-img {
+    margin-left: 90px;
+    width:50px;
+    height:50px;
+    object-fit: cover; /* Asegura que la imagen no se deforme */
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+/* Imagen hover (inicialmente oculta) */
+.cart-img.hover {
+    opacity: 0;
+}
+
+
+
+.cartButton:hover .cart-img.hover {
+    opacity: 1;
+    transform: scale(1.1); /* Efecto de zoom */
+}
+
+
+/* Efecto hover */
+.cartButton:hover .cart-img {
+    width:50px;
+    height:50px;
+    content: url('/static/elements/carthovered.png'); /* Reemplaza la imagen al hover */
+
+}
+
+.cart .btn {
+    background-color: transparent; /* Color del botón */
+    border: none; /* Sin bordes */
+    margin-left: -220px;
+    margin-right: -130px;
+    border-radius: 5px; /* Bordes redondeados */
+    transition: background-color 0.3s ease;
+}
+
+.cart .btn:hover {
+    background-color: #1976D2; /* Cambia el color al pasar el mouse */
+}
+
+
+.contenido {
+    width: 19%; 
+    height: 40%; 
+    background-image: url('/static/elements/headerIndex.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#modalidadE, #copiasT, #colorT, #carasT {
+    font-size: 20px;
+}
+
+.opCopias, .opColor, .opCaras {
+    border-style: solid;
+    padding-bottom: 20px;
+    border-top: none;
+    border-color: gray;
+    border-left: none;
+    border-right: none;
+    border-width: 1px;
+
+}
+
+/* Añade espacio debajo del bloque de configuración de impresión */
+.impresionConf {
+
+    margin-left: -300px; /* Espacio entre los bloques */
+}
+
+.impresionConf,
+.col-md-8 {
+    flex: 1; /* Ambos bloques comparten el espacio disponible */
+}
+
+.col-md-8 {
+    display: flex; /* Permite organizar internamente los botones y carpetas */
+    flex-direction: column; /* Alinea los elementos verticalmente */
+}
+
+/* Asegura alineación horizontal de los bloques principales */
+.row {
+    display: flex;
+    flex-wrap: nowrap; 
+    gap: 200px;
+}
+
+#config-form {
+    padding-top: 20px;
+    border-style: solid;
+    border-color: black;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    border-width: 2px;
+    border-radius: 3px;
+
+}
+/* Botones de color de impresión */
+#envio-opciones .btn {
+    margin:10px;
+    background-color: white; 
+    color: black; 
+    border: solid;
+    border-radius: 12px; 
+    padding: 10px 20px; 
+    font-size:20px; 
+    transition: all 0.3s ease;
+
+}
+
+/* Botones activos */
+#envio-opciones .btn.active {
+    background-color: black; 
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto hover */
+#envio-opciones .btn:hover {
+    background-color: rgb(77, 76, 76); 
+    color: white;
+    transform: scale(1.05); 
+}
+
+/* Botones de color de impresión */
+#color-impresion .btn {
+    margin:10px;
+    background-color: white; 
+    color: black; 
+    border: solid;
+    border-radius: 12px; 
+    padding: 10px 20px; 
+    font-size:20px; 
+    transition: all 0.3s ease;
+
+}
+
+/* Botones activos */
+#color-impresion .btn.active {
+    background-color: black; 
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto hover */
+#color-impresion .btn:hover {
+    background-color: rgb(77, 76, 76); 
+    color: white;
+    transform: scale(1.05); 
+}
+
+/* Botones de una o doble cara */
+#cara-impresion .btn {
+    margin:10px;
+    background-color: white; 
+    color: black; 
+    border: solid;
+    border-radius: 12px; 
+    padding: 10px 20px; 
+    font-size:20px; 
+    transition: all 0.3s ease;
+
+}
+
+/* Botones activos */
+#cara-impresion .btn.active {
+    background-color: black; 
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Efecto hover */
+#cara-impresion .btn:hover {
+    background-color: rgb(77, 76, 76); 
+    color: white;
+    transform: scale(1.05); 
+}
+
+/* Contenedor del select personalizado */
+.custom-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+/* Estiliza el <select> */
+.custom-select {
+    appearance: none; /* Elimina la apariencia predeterminada del navegador */
+    background-color: white;
+    color: black;
+    font-size: 18px;
+    padding: 10px 15px;
+    border: 2px solid black;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: "Arial", sans-serif;
+}
+
+/* Flecha personalizada para el select */
+.custom-arrow {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    border: solid black;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 5px;
+    transform: rotate(45deg);
+    transition: all 0.3s ease;
+}
+
+/* Hover en el <select> */
+.custom-select:hover {
+    background-color: rgb(245, 245, 245);
+    border-color: black;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Cambia la flecha en hover */
+.custom-select:hover + .custom-arrow {
+    border-color: rgb(50, 50, 50);
+}
+
+/* Elementos seleccionados */
+.custom-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Contenedor del textarea */
+.textarea-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* Estiliza el textarea */
+.custom-textarea {
+    font-size: 16px;
+    color: black;
+    background-color: #f8f9fa;
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 10px 15px;
+    width: 100%;
+    resize: none;
+    transition: all 0.3s ease;
+    font-family: "Arial", sans-serif;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Placeholder personalizado */
+.custom-textarea::placeholder {
+    color: gray;
+    font-style: italic;
+}
+
+/* Efectos hover y focus */
+.custom-textarea:hover {
+    border-color: black;
+    background-color: #ffffff;
+}
+
+.custom-textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    background-color: white;
+}
+
+/* Ícono dentro del contenedor */
+.textarea-icon {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: gray;
+    pointer-events: none;
+    transition: color 0.3s ease;
+}
+
+/* Cambiar color del ícono al focus */
+.custom-textarea:focus + .textarea-icon {
+    color: #007bff;
+}
+
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+    }
+
+    .impresionConf {
+        margin-bottom: 20px;
+    }
+}
+
+#cart-total {
+    margin-top: 50px;
+    background-color: rgb(237, 235, 235); 
+    color: black; 
+    border: solid;
+    border-radius: 12px; 
+    padding: 10px 20px 30px 20px; 
+    font-size:30px; 
+
+}
+#totalPrize{
+    margin-top: 20px;
+    background-color: white; 
+    color: black; 
+    border: solid;
+    border-radius: 12px; 
+    padding: 10px 20px; 
+    font-size:30px; 
+}
+
+.updateCart {
+    font-size: 20px;
+    border-radius: 17px;
+    background-color: #3a8f47; /* Color de fondo */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease; /* Animaciones suaves */
+}
+
+/* Efecto hover */
+.updateCart:hover {
+    background-color: black; /* Fondo negro */
+    color: white; /* Texto blanco */
+    transform: scale(1.1); /* Aumenta ligeramente el tamaño */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra al hacer hover */
+}
+
+
+.folder-item {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-style: solid;
+    border-width: 1px; /* Espesor del borde */
+    border-radius: 5px; /* Bordes redondeados */
+    border-color: black; /* Color del borde */
+    background-color: #f8f9fa; /* Fondo suave */
+    padding: 15px; /* Espaciado interno */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para destacar */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animaciones */
+}
+
+
+/* Efecto hover general */
+.folder-item:hover {
+    transform: scale(1.02); /* Aumenta ligeramente el tamaño */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Sombra más fuerte */
+    background-color: #e9ecef; /* Cambia el fondo al hover */
+}
+
+/* Efecto para la carpeta activa */
+.folder-item.active {
+
+    transform: scale(1.05); /* Más grande que el hover */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3); /* Sombra más fuerte */
+    background-color: #d1e7dd; /* Color diferente para indicar la selección */
+    transition: all 0.3s ease; /* Suaviza la transición */
+}
+
+/* Asegúrate de que :hover no se aplique si la carpeta está activa */
+.folder-item.active:hover {
+    transform: scale(1.05); /* Mantiene el efecto de .active */
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+    background-color: #a2d9c0; /* Mantén el color de .active */
+}
+
+
+/* Contenedor personalizado */
+.custom-file-upload {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacio entre el botón y el texto */
+}
+
+/* Oculta el campo real de selección de archivos */
+/* input[type="file"] {
+    display: none; 
+} */
+
+/* Botón de selección personalizado */
+.custom-file-upload label {
+    display: inline-block;
+    background-color: #007BFF; /* Color de fondo */
+    color: white; /* Color del texto */
+    padding: 10px 20px; /* Tamaño del botón */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Indica que es interactivo */
+    transition: background-color 0.3s ease;
+}
+
+.custom-file-upload label:hover {
+    background-color: #0056b3; /* Color al pasar el mouse */
+}
+
+
+/* Texto del archivo seleccionado */
+#file-chosen {
+    font-size: 14px;
+    color: #6c757d; /* Gris claro */
+    font-style: italic;
+}
+
+.file-item {
+    border-style: solid;
+    padding-bottom: 20px;
+    border-top: none;
+    border-color: gray;
+    border-left: none;
+    border-right: none;
+    border-width: 1px;
+    margin-top: 20px;
+    
+}
+
+.file-icon {
+    width: 50px;
+    height: 50px;
+
+}
+
+/* Estado deshabilitado */
+button.confirmarSubida:disabled {
+    background-color: #ddd; /* Color de fondo gris */
+    color: #999; /* Texto gris claro */
+    border: 1px solid #ccc; /* Borde claro */
+    cursor: not-allowed; /* Cursor no permitido */
+    opacity: 0.6; /* Transparencia */
+    transition: all 0.3s ease; /* Transición suave */
+}
+
+/* Estado habilitado */
+button.confirmarSubida {
+    background-color: #54a26e; /* Azul por defecto */
+    color: white; /* Texto blanco */
+    border: 1px solid #007bff;
+    cursor: pointer;
+    opacity: 1; /* Totalmente visible */
+    transition: all 0.3s ease; /* Suaviza los cambios */
+}
+
+/* Hover cuando está habilitado */
+button.confirmarSubida:hover:not(:disabled) {
+    background-color: #000000; /* Azul más oscuro */
+    border-color: #0056b3; /* Borde más oscuro */
+    transform: scale(1.05); /* Aumenta ligeramente el tamaño */
+}
+
+
+.no-folders-img{
+    margin-top: 100px;
+    width: 120%;
+    height: 120%;
+
+}
+

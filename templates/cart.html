@@ -1,18 +1,49 @@
+
 <!doctype html>
 <html lang="en">
 <head>
     <title>Carrito</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/styleCart.css') }}">
+
 </head>
 <body>
+    <div class="barra-superior">
+        <div class="logo">
+            <!-- <img src="/static/elements/logo.png" alt="Logo" class="logo-img"> -->
+        </div>
+        <div class="contenido">
+            <img src="/static/elements/headerIndex.png" alt="Imagen Central" class="contenido-img">
+        </div>
+    </div>
+        <!-- Botones -->
+        <div class="d-flex justify-content-between mt-4 botones">
+            <a href="{{ url_for('index') }}" class="btn btn-primary ">Volver</a>
+            {% if cart %}
+            <form action="{{ url_for('payment_bizum.process_payment') }}" method="POST">
+                <button type="submit" class="btn btn-success">Pagar con Bizum</button>
+            </form>
+            <form action="{{ url_for('procesar_pedido') }}" method="POST">
+                <button type="submit" class="btn btn-success">Procesar Pedido</button>
+            </form>
+            
+            
+            
+            {% endif %}
+        </div>
     <div class="container my-5">
         <div class="d-flex justify-content-between align-items-center">
             <h1>Carrito</h1>
             <!-- Precio total en grande -->
-            <div class="alert alert-primary text-center" style="font-size: 1.5rem;">
-                Precio total: €{{ cart_total }}
+            <div id="cart-total" class="alert alert-info">
+                <p id="totalPrize">Subtotal: {{ cart_total }} €</p>
+                <p id="envioPrice">Envío: {{ envio_total }} €</p>
+                <hr>
+                <strong id="finalPrice">Total final: {{ total_con_envio }} €</strong>
             </div>
+             
         </div>
+    
         {% if cart %}
             {% for folder in cart %}
             <div class="p-3 mb-3 border rounded">
@@ -21,21 +52,33 @@
                 <ul>
                     <li>Copias: {{ folder.configuracion.copias }}</li>
                     <li>Color: {{ folder.configuracion.color }}</li>
-                    <li>Tamaño del papel: {{ folder.configuracion.tamano_papel }}</li>
-                    <li>Grosor del papel: {{ folder.configuracion.grosor_papel }}</li>
+                    <li>Cara: {{ folder.configuracion.cara }}</li>
+                    <li>Encuadernación: {{ folder.configuracion.encuadernacion }}</li>
+                    <li>Comentarios: {{ folder.configuracion.comentarios }}</li>
                 </ul>
                 <h4>Archivos:</h4>
                 <ul>
                     {% for archivo in folder.archivos %}
-                    <li>{{ archivo.name }}</li>
+                    <li>{{ archivo.name }} - {{ archivo.pages }} páginas</li>
                     {% endfor %}
                 </ul>
-            </div>
+            </div>            
             {% endfor %}
         {% else %}
             <p>No hay carpetas en el carrito.</p>
         {% endif %}
-        <a href="{{ url_for('index') }}" class="btn btn-primary">Volver</a>
+        {% if session.get('envio_direccion') %}
+        <div class="alert alert-info">
+            <h5>Detalles de Envío</h5>
+            <p><strong>Nombre:</strong> {{ session['name'] }}</p>
+
+            <p><strong>Dirección:</strong> {{ session['envio_direccion'] }}</p>
+            <p><strong>Provincia:</strong> {{ session['envio_provincia'] }}</p>
+            <p><strong>Correo electrónico:</strong> {{ session['envio_email'] }}</p>
+            <p><strong>Teléfono:</strong> {{ session['envio_telefono'] }}</p>
+        </div>
+        {% endif %}
+        
     </div>
 </body>
 </html>

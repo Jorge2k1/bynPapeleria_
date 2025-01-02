@@ -1,5 +1,8 @@
-
 {
+    "recogida": {
+        "tienda": 0.0,
+        "domicilio": 4.50
+    },
     "color": {
         "una_cara": 0.15,
         "dos_caras": 0.15
@@ -8,10 +11,13 @@
         "una_cara": 0.04,
         "dos_caras": 0.03
     },
-    "paper_weight": {
-        "160 gr (Grueso alto)": 0.05
+    "encuadernacion_a4": {
+        "hasta_50_hojas": 1.5,
+        "51_a_100_hojas": 2.0,
+        "101_a_150_hojas": 2.5,
+        "151_a_200_hojas": 3.0,
+        "201_a_250_hojas": 3.5,
+        "251_a_300_hojas": 4.0
     },
-    "paper_size": {
-        "A4 (297 x 210 mm)": 1.0
-    }
+    "comentarios": "Adicionales o instrucciones especiales"
 }

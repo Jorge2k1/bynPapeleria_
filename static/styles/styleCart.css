@@ -1,0 +1,158 @@
+/* Barra superior */
+.barra-superior {
+    width: 100%;
+    height: 141px;
+    background-color: black;
+    display: flex;
+    align-items: center; /* Centra verticalmente los elementos */
+    justify-content: space-between; /* Logo e imagen a cada extremo */
+    padding: 0 20px; /* Espaciado interno */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Sombra para resaltar */
+}
+
+.logo {
+    flex-shrink: 0; /* Evita que el logo se reduzca */
+}
+
+.contenido {
+    flex-grow: 1; /* Permite centrar la imagen en el medio */
+    text-align: center;
+}
+
+.logo-img {
+    height: auto;
+    width: 100px; /* Ajusta el tamaño del logo */
+}
+
+.contenido-img {
+    height: 100px; /* Tamaño proporcional */
+    width: auto;
+}
+
+/* Contenedor principal */
+.container {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 5);
+}
+
+/* Encabezados */
+h1, h3, h4 {
+    color: black;
+    text-transform: uppercase; /* Mayúsculas */
+    letter-spacing: 1px; /* Espaciado entre letras */
+}
+
+/* Total del carrito */
+#cart-total {
+    margin-top: 20px;
+    background-color: #f8f9fa; /* Gris claro */
+    color: black;
+    border: 2px solid black;
+    border-radius: 12px;
+    padding: 20px;
+    font-size: 1.5rem;
+    text-align: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#totalPrize {
+    margin-top: 10px;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Botones */
+.botones {
+    margin-left: 450px ;
+    margin-right:450px ;
+}
+.btn {
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+}
+
+.btn-primary:hover {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+.btn-success {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+}
+
+.btn-success:hover {
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+}
+
+/* Contenedor de carpetas */
+.p-3.mb-3.border.rounded {
+    background-color: #f8f9fa; /* Gris claro */
+    border: 1px solid black;
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.p-3.mb-3.border.rounded:hover {
+    transform: scale(1.02); /* Ligero zoom */
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.1); /* Resalta al hover */
+}
+
+/* Estilo de las características de configuración */
+ul {
+    list-style-type: none; /* Elimina viñetas */
+    padding: 0;
+}
+
+ul li {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: black;
+    background-color: white; /* Fondo blanco para contraste */
+    border: 1px solid black; /* Bordes negros para destacar */
+    border-radius: 8px;
+    padding: 10px 15px; /* Espaciado interno */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+ul li:hover {
+    background-color: black; /* Fondo negro al hover */
+    color: white; /* Texto blanco al hover */
+    transform: scale(1.03); /* Ligero aumento de tamaño */
+}
+
+/* Estado vacío del carrito */
+p {
+    color: black;
+    font-style: italic;
+    font-size: 1.2rem;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Botones en la barra inferior */
+.d-flex.justify-content-between.mt-4 .btn {
+    min-width: 150px;
+    padding: 10px 20px;
+}

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Pagar con Bizum</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-5">
+        <h1>Pagar con Bizum</h1>
+        <div class="alert alert-info">
+            <h3>Realiza el pago a:</h3>
+            <p><strong>Número de teléfono:</strong> +34 600 000 000</p>
+            <p><strong>Total a pagar:</strong> {{ total_con_envio }} €</p>
+            <p><strong>Concepto:</strong> Pedido-{{ session.get('order_id', '0001') }}</p>
+        </div>
+
+        <p>Una vez realizado el pago, introduce el número de referencia que aparece en tu app bancaria para confirmar:</p>
+        <form action="{{ url_for('payment_bizum.process_payment_final') }}" method="POST">
+            <div class="mb-3">
+                <label for="reference" class="form-label">Número de referencia del pago</label>
+                <input type="text" class="form-control" id="reference" name="reference" placeholder="Introduce el número de referencia" required>
+            </div>
+            <button type="submit" class="btn btn-success">Confirmar Pago</button>
+            <a href="{{ url_for('cart') }}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>
