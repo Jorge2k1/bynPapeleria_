@@ -10,7 +10,7 @@ itsdangerous==2.2.0
 Jinja2==3.1.5
 MarkupSafe==3.0.2
 pillow==11.0.0
-pycryptodome==3.18.0
+pycrypto==2.6.1
 PyMuPDF==1.25.1
 PyMySQL==1.1.1
 qrcode==8.0
