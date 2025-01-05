@@ -337,5 +337,7 @@ def enviar_correo_pedido(pedido):
         print(f"Error al enviar el correo: {e}")
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
 
