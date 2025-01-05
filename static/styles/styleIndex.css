@@ -39,10 +39,21 @@
 /* Posiciona el dropdown en la esquina superior derecha, debajo de la barra */
 .instructions-dropdown {
     position: absolute;
-    top: 150px; /* Justo debajo de la barra superior */
-    right: 20px; /* Separado un poco del borde derecho */
-    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    top: 150px;
+    right: 20px;
+    z-index: 1000;
 }
+
+@media (max-width: 768px) {
+    .instructions-dropdown {
+        top: auto;
+        right: auto;
+        left: 50%; /* Centra el botón horizontalmente */
+        transform: translateX(-50%);
+        margin-bottom: 20px; /* Añade espacio debajo */
+    }
+}
+
 
 /* Botón del dropdown */
 .instructions-dropdown .btn-dark {
@@ -135,9 +146,18 @@
     margin-left: 90px;
     width:50px;
     height:50px;
-    object-fit: cover; /* Asegura que la imagen no se deforme */
+    /* object-fit: cover; Asegura que la imagen no se deforme */
+    object-fit: contain; /* Evita que las imágenes se deformen */
     transition: opacity 0.7s ease, transform 0.7s ease;
 }
+
+@media (max-width: 768px) {
+    .cart-img {
+        width: 40px;
+        height: 40px;
+    }
+}
+
 /* Imagen hover (inicialmente oculta) */
 .cart-img.hover {
     opacity: 0;
@@ -199,8 +219,14 @@
 
 /* Añade espacio debajo del bloque de configuración de impresión */
 .impresionConf {
+    margin-left: 0; /* Elimina márgenes negativos */
+    width: 100%; /* Asegura que ocupe todo el ancho disponible */
+}
 
-    margin-left: -300px; /* Espacio entre los bloques */
+@media (max-width: 768px) {
+    .impresionConf {
+        margin-bottom: 20px; /* Añade espacio debajo */
+    }
 }
 
 .impresionConf,
@@ -211,13 +237,22 @@
 .col-md-8 {
     display: flex; /* Permite organizar internamente los botones y carpetas */
     flex-direction: column; /* Alinea los elementos verticalmente */
+    width: 100%; /* Asegura que ocupe todo el ancho */
+
 }
 
 /* Asegura alineación horizontal de los bloques principales */
 .row {
     display: flex;
-    flex-wrap: nowrap; 
+    flex-wrap: wrap; 
     gap: 200px;
+}
+
+@media (max-width: 768px) {
+    .row {
+        flex-wrap: wrap; /* Permite que las columnas se apilen */
+        gap: 20px; /* Reduce el espacio entre columnas */
+    }
 }
 
 #config-form {
@@ -427,12 +462,12 @@
 }
 
 @media (max-width: 768px) {
-    .row {
-        flex-direction: column;
-    }
-
     .impresionConf {
         margin-bottom: 20px;
+    }
+
+    .col-md-8 {
+        flex-direction: column; /* Asegura que los elementos se apilen */
     }
 }
 
