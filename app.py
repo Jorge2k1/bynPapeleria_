@@ -46,7 +46,7 @@ class Pedido(db.Model):
 with app.app_context():
     db.create_all()
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = '/tmp/uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Load pricing from JSON
