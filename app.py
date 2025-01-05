@@ -209,7 +209,7 @@ def enviar_correo_pedido(pedido):
     try:
         msg = MIMEMultipart()
         msg['From'] = EMAIL_ADDRESS
-        msg['To'] = 'mananes.jm@gmail.com'
+        msg['To'] = 'repro@papeleriablancoynegro.com'
         msg['Subject'] = f"Nuevo pedido recibido: {pedido.id}"
 
         detalles_pedido = json.loads(pedido.detalles_pedido)
@@ -335,7 +335,7 @@ def enviar_correo_pedido(pedido):
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()
         server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-        server.sendmail(EMAIL_ADDRESS, 'mananes.jm@gmail.com', msg.as_string())
+        server.sendmail(EMAIL_ADDRESS, 'repro@papeleriablancoynegro.com', msg.as_string())
         server.quit()
         print("Correo enviado exitosamente.")
     except Exception as e:
