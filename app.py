@@ -19,7 +19,7 @@ app.register_blueprint(payment_bizum_bp, url_prefix='/payment_bizum')
 app.secret_key = 'super_secret_key'
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/papeleriabyn'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:caenwRjhAFtaifZtxykDCXUBgOJxoRMj@postgres.railway.internal:5432/railway'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
