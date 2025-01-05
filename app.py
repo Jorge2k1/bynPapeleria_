@@ -18,7 +18,8 @@ app.register_blueprint(payment_bizum_bp, url_prefix='/payment_bizum')
 
 app.secret_key = 'super_secret_key'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/papeleriabyn'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/papeleriabyn'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -204,7 +205,7 @@ def enviar_correo_pedido(pedido):
     try:
         msg = MIMEMultipart()
         msg['From'] = EMAIL_ADDRESS
-        msg['To'] = 'jorgemananesfraile@gmail.com'
+        msg['To'] = 'mananes.jm@gmail.com'
         msg['Subject'] = f"Nuevo pedido recibido: {pedido.id}"
 
         detalles_pedido = json.loads(pedido.detalles_pedido)
@@ -330,14 +331,15 @@ def enviar_correo_pedido(pedido):
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()
         server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-        server.sendmail(EMAIL_ADDRESS, 'jorgemananesfraile@gmail.com', msg.as_string())
+        server.sendmail(EMAIL_ADDRESS, 'mananes.jm@gmail.com', msg.as_string())
         server.quit()
         print("Correo enviado exitosamente.")
     except Exception as e:
         print(f"Error al enviar el correo: {e}")
 
 if __name__ == '__main__':
-    from werkzeug.middleware.proxy_fix import ProxyFix
-    app.wsgi_app = ProxyFix(app.wsgi_app)
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+    app.run(debug=True)
+    # from werkzeug.middleware.proxy_fix import ProxyFix
+    # app.wsgi_app = ProxyFix(app.wsgi_app)
+    # app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
 
