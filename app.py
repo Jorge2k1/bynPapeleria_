@@ -19,7 +19,7 @@ app.register_blueprint(payment_bizum_bp, url_prefix='/payment_bizum')
 app.secret_key = 'super_secret_key'
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/papeleriabyn'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:caenwRjhAFtaifZtxykDCXUBgOJxoRMj@postgres.railway.internal:5432/railway'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:caenwRjhAFtaifZtxykDCXUBgOJxoRMj@viaduct.proxy.rlwy.net:23177/railway'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -36,7 +36,11 @@ class Pedido(db.Model):
     cliente_email = db.Column(db.String(255), nullable=False)
     detalles_pedido = db.Column(db.Text, nullable=False)
     total = db.Column(db.Float, nullable=False)
-    estado = db.Column(db.Enum('pendiente', 'procesado'), default='pendiente')
+    estado = db.Column(
+        db.Enum('pendiente', 'procesado', name='estado_enum', create_type=True),
+        default='pendiente',
+        nullable=False
+    )    
     fecha = db.Column(db.DateTime, default=db.func.current_timestamp())
     direccion = db.Column(db.String(255), nullable=True)
     provincia = db.Column(db.String(255), nullable=True)
