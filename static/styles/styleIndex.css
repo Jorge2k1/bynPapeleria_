@@ -209,14 +209,6 @@
     background-color: #1976D2; /* Cambia el color al pasar el mouse */
 }
 
-.contenido {
-    width: 19%; 
-    height: 40%; 
-    background-image: url('/static/elements/headerIndex.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
 
 #modalidadE, #copiasT, #colorT, #carasT {
     font-size: 20px;
@@ -630,7 +622,16 @@ button.confirmarSubida:hover:not(:disabled) {
 }
 /* Media queries para pantallas pequeñas */
 @media (max-width: 768px) {
+    .cart-img {
+        margin-top: 195px; /* Incrementa el margen superior */
+        margin-left: 10px; /* Mueve el botón hacia la izquierda */
+        background-color: transparent; /* Color del botón */
+        border: none; /* Sin bordes */
+        border-radius: 5px; /* Bordes redondeados */
+        transition: background-color 0.3s ease;
+    }
 
+    
     #validation-errors {
         font-size: 18px; /* Reducir tamaño del texto */
         padding: 10px 15px; /* Ajustar el padding */
