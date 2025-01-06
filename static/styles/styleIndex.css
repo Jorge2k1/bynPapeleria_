@@ -23,14 +23,20 @@
 
 .barra-superior {
     width: 100%;
-    height: 141px;
+    height: 141px; /* Mantén la altura original */
     background-color: black;
-    display: flex; /* Alinea los elementos en fila */
-    align-items: center; /* Centra verticalmente los elementos */
-    justify-content: space-between; /* Coloca elementos a los extremos */
-    padding: 0 20px; /* Espaciado interno en los lados */
+    background-image: url('/static/elements/headerIndex.png'); /* Ruta de tu imagen */
+    background-size: contain; /* La imagen se ajusta al contenedor sin recortarse */
+    background-repeat: no-repeat; /* Evita que se repita */
+    background-position: center; /* Centra la imagen horizontal y verticalmente */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px; /* Espaciado interno */
     gap: 20px; /* Espacio entre el logo y el contenido */
 }
+
+
 
 .logo {
     flex-shrink: 0; /* Evita que el logo se reduzca al redimensionar */
@@ -44,15 +50,7 @@
     z-index: 1000;
 }
 
-@media (max-width: 768px) {
-    .instructions-dropdown {
-        top: auto;
-        right: auto;
-        left: 50%; /* Centra el botón horizontalmente */
-        transform: translateX(-50%);
-        margin-bottom: 20px; /* Añade espacio debajo */
-    }
-}
+
 
 
 /* Botón del dropdown */
@@ -115,6 +113,7 @@
     outline: none !important; /* Elimina el borde al enfocarse */
 }
 
+
 .addFolder {
 
     display: inline-block !important; /* Asegura que el enlace envuelva la imagen */
@@ -129,8 +128,8 @@
 }
 
 .addFolder:hover, .folderImg:hover {
-    content: url('/static/elements/folderhovered.png'); /* Reemplaza la imagen al hover */
-    transform: scale(1.1); /* Efecto de zoom */
+    content: url('/static/elements/folderhovered.png'); 
+    transform: scale(1.1); 
 }
 
 .folderImg {
@@ -151,11 +150,32 @@
     transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
-@media (max-width: 768px) {
-    .cart-img {
-        width: 40px;
-        height: 40px;
-    }
+
+.delete-folder-btn {
+    background: none; 
+    border: none;
+    position: absolute; /* Para posicionarlo en la esquina */
+    top: 10px; /* Ajusta la posición superior */
+    right: 10px; /* Ajusta la posición derecha */
+    width: 25px; /* Tamaño del botón */
+    height: 25px; /* Tamaño del botón */
+    cursor: pointer; /* Manito al pasar */
+    padding: 0; /* Sin espacio interno */
+    transition: transform 0.3s ease; /* Animación suave */
+}
+
+.delete-folder-btn img {
+    width: 100%; 
+    height: 100%;
+    opacity: 1;
+    object-fit: cover; 
+    transition: transform 0.6s ease; 
+}
+
+.delete-folder-btn:hover img {
+    opacity: 0.6;
+    transform: scale(1.1); 
+    content: none; 
 }
 
 /* Imagen hover (inicialmente oculta) */
@@ -163,13 +183,10 @@
     opacity: 0;
 }
 
-
-
 .cartButton:hover .cart-img.hover {
     opacity: 1;
     transform: scale(1.1); /* Efecto de zoom */
 }
-
 
 /* Efecto hover */
 .cartButton:hover .cart-img {
@@ -191,7 +208,6 @@
 .cart .btn:hover {
     background-color: #1976D2; /* Cambia el color al pasar el mouse */
 }
-
 
 .contenido {
     width: 19%; 
@@ -223,11 +239,6 @@
     width: 100%; /* Asegura que ocupe todo el ancho disponible */
 }
 
-@media (max-width: 768px) {
-    .impresionConf {
-        margin-bottom: 20px; /* Añade espacio debajo */
-    }
-}
 
 .impresionConf,
 .col-md-8 {
@@ -248,12 +259,6 @@
     gap: 200px;
 }
 
-@media (max-width: 768px) {
-    .row {
-        flex-wrap: wrap; /* Permite que las columnas se apilen */
-        gap: 20px; /* Reduce el espacio entre columnas */
-    }
-}
 
 #config-form {
     padding-top: 20px;
@@ -461,15 +466,6 @@
     color: #007bff;
 }
 
-@media (max-width: 768px) {
-    .impresionConf {
-        margin-bottom: 20px;
-    }
-
-    .col-md-8 {
-        flex-direction: column; /* Asegura que los elementos se apilen */
-    }
-}
 
 #cart-total {
     margin-top: 50px;
@@ -631,5 +627,73 @@ button.confirmarSubida:hover:not(:disabled) {
     width: 120%;
     height: 120%;
 
+}
+/* Media queries para pantallas pequeñas */
+@media (max-width: 768px) {
+
+    #validation-errors {
+        font-size: 18px; /* Reducir tamaño del texto */
+        padding: 10px 15px; /* Ajustar el padding */
+    }
+
+    .instructions-dropdown .btn-dark {
+        font-size: 0.9rem; /* Reducir tamaño de fuente */
+        padding: 8px 12px; /* Ajustar tamaño del botón */
+    }
+
+    #config-form {
+        padding: 10px; /* Reducir padding del formulario */
+    }
+
+    #modalidadE, #copiasT, #colorT, #carasT {
+        font-size: 16px; /* Reducir tamaño de los títulos */
+    }
+
+    .opCopias, .opColor, .opCaras {
+        padding-bottom: 10px; /* Reducir padding interno */
+    }
+
+    #envio-opciones .btn,
+    #color-impresion .btn,
+    #cara-impresion .btn {
+        font-size: 16px; /* Reducir tamaño de fuente en botones */
+        padding: 8px 12px; /* Reducir padding */
+    }
+
+    .custom-select {
+        font-size: 14px; /* Reducir tamaño de fuente */
+        padding: 8px 10px; /* Ajustar padding */
+    }
+
+    .custom-textarea {
+        font-size: 14px; /* Reducir tamaño del texto */
+        padding: 8px 10px; /* Ajustar padding */
+    }
+
+    .cart-img {
+        width: 35px; /* Reducir tamaño del carrito */
+        height: 35px;
+    }
+
+    .folder-item {
+        padding: 10px; /* Reducir padding interno */
+        margin-bottom: 15px; /* Reducir separación */
+    }
+
+    #cart-total, #totalPrize {
+        font-size: 20px; /* Reducir tamaño de fuente */
+        padding: 8px 15px; /* Reducir padding */
+    }
+
+    .no-folders-img{
+        margin-top: 10px;
+        width: 90%;
+        height: 90%;
+    
+    }
+    .updateCart {
+        font-size: 16px; /* Reducir tamaño de fuente */
+        padding: 8px 15px; /* Ajustar tamaño del botón */
+    }
 }
 

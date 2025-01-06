@@ -156,6 +156,23 @@ def index():
 
             return {"success": True}
 
+        elif action == 'delete_folder':
+            folder_name = request.form['folder_name']
+            # Encuentra la carpeta en la sesión
+            folder = next((f for f in session['folders'] if f['name'] == folder_name), None)
+            if folder:
+                # Elimina archivos asociados del servidor
+                for archivo in folder['archivos']:
+                    file_path = os.path.join(UPLOAD_FOLDER, archivo['name'])
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                
+                # Elimina la carpeta de la sesión
+                session['folders'].remove(folder)
+                session.modified = True
+                return {"success": True}
+            return {"success": False}
+
 
     return render_template('index.html', folders=session['folders'], cart_total=cart_total, prices=PRICES)
 

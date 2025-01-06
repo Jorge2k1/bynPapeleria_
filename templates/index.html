@@ -99,7 +99,7 @@
                     <div class="mb-3">
                         <label for="comentarios" class="form-label">Comentarios adicionales (opcional)</label>
                         <div class="textarea-wrapper">
-                            <textarea class="form-control custom-textarea" id="comentarios" name="comentarios" rows="3" placeholder="Ejemplo: Impresión urgente, entregar antes del mediodía..."></textarea>
+                            <textarea class="form-control custom-textarea" id="comentarios" name="comentarios" rows="3" placeholder="Llamar al timbre X, subir al piso Y..."></textarea>
                             <span class="textarea-icon">🖊️</span>
                         </div>
                     </div>
@@ -166,6 +166,12 @@
                         class="p-3 mb-3 border rounded folder-item" 
                         data-folder-name="{{ folder.name }}" 
                         data-config='{{ folder.configuracion | tojson | safe }}'>
+
+                                <!-- Botón para eliminar carpeta -->
+                        <button class="delete-folder-btn" onclick="deleteFolder(event, '{{ folder.name }}')">
+                            <img src="/static/elements/deleteIcon2.png" alt="Eliminar carpeta">
+                        </button>
+
                         <h5>{{ folder.name }}</h5>
                             <form method="POST" enctype="multipart/form-data">
                                 <input type="hidden" name="folder_name" value="{{ folder.name }}">
@@ -178,10 +184,6 @@
                                 </div>
                                 
                                 
-                                <!-- <div class="mb-3">
-                                    <label class="form-label">Selecciona los archivos a imprimir</label>
-                                    <input type="file" class="form-control" name="file" multiple>
-                                </div> -->
                             </form>
 
                             <div class="uploaded-files">
@@ -518,6 +520,30 @@
 
             // Quita la clase `show` para ocultar el mensaje
             errorDiv.classList.remove('show');
+        }
+
+        function deleteFolder(event, folderName) {
+            event.stopPropagation(); // Evita que el clic seleccione la carpeta
+
+            fetch("/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({
+                    action: "delete_folder",
+                    folder_name: folderName,
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.success) {
+                    location.reload(); // Recarga la página para reflejar los cambios
+                } else {
+                    alert("Hubo un problema al eliminar la carpeta.");
+                }
+            })
+            .catch((error) => console.error("Error al eliminar la carpeta:", error));
         }
 
 // Si eliminas o agregas carpetas dinámicamente, asegúrate de volver a llamar a `checkFolders`
